@@ -10,7 +10,8 @@ class TravelApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
-      BlocProvider(create: (context) => AppBloc(AppThemeState.light))
+      BlocProvider(
+          create: (context) => AppBloc(AppThemeState.light, AppRouteState.home))
     ], child: const TravelAppView());
   }
 }
@@ -28,7 +29,7 @@ class _TravelAppViewState extends State<TravelAppView> {
     return BlocBuilder<AppBloc, AppState>(builder: (context, state) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: state is LightModeState ? lightTheme : darkTheme,
+        theme: state.themeState == AppThemeState.light ? lightTheme : darkTheme,
         home: const HomePage(),
       );
     });

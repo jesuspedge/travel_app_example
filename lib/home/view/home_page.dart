@@ -39,33 +39,31 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(Icons.search_rounded),
-                    BlocBuilder<AppBloc, AppState>(
-                      builder: (context, state) {
-                        return GestureDetector(
-                          onTap: () {
-                            context.read<AppBloc>().add(state is HomeRouteState
-                                ? DetailsRouteEvent()
-                                : HomeRouteEvent());
-                          },
-                          child: Icon(state is HomeRouteState
-                              ? Icons.exit_to_app
-                              : Icons.home),
-                        );
-                      },
+                    Icon(
+                      Icons.search_rounded,
+                      color: Theme.of(context).primaryIconTheme.color,
                     ),
-                    const Text('Feed'),
+                    Text(
+                      'Feed',
+                      style: Theme.of(context).primaryTextTheme.headlineSmall,
+                    ),
                     BlocBuilder<AppBloc, AppState>(
                       builder: (context, state) {
                         return GestureDetector(
                           onTap: () {
-                            context.read<AppBloc>().add(state is LightModeState
-                                ? EnableDarkModeEvent()
-                                : EnableLightModeEvent());
+                            context.read<AppBloc>().add(
+                                state.themeState == AppThemeState.light
+                                    ? const ChangeThemeEvent(
+                                        themeState: AppThemeState.dark)
+                                    : const ChangeThemeEvent(
+                                        themeState: AppThemeState.light));
                           },
-                          child: Icon(state is LightModeState
-                              ? Icons.dark_mode_rounded
-                              : Icons.light_mode_rounded),
+                          child: Icon(
+                            state.themeState == AppThemeState.light
+                                ? Icons.dark_mode_rounded
+                                : Icons.light_mode_rounded,
+                            color: Theme.of(context).primaryIconTheme.color,
+                          ),
                         );
                       },
                     )

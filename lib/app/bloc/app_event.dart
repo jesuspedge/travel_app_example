@@ -1,26 +1,15 @@
 part of 'app_bloc.dart';
 
-@immutable
-abstract class AppEvent extends Equatable {
+sealed class AppEvent {
   const AppEvent();
 }
 
-class EnableLightModeEvent extends AppEvent {
-  @override
-  List<Object> get props => [];
+final class ChangeThemeEvent extends AppEvent {
+  final AppThemeState themeState;
+  const ChangeThemeEvent({required this.themeState});
 }
 
-class EnableDarkModeEvent extends AppEvent {
-  @override
-  List<Object> get props => [];
-}
-
-class HomeRouteEvent extends AppEvent {
-  @override
-  List<Object> get props => [];
-}
-
-class DetailsRouteEvent extends AppEvent {
-  @override
-  List<Object> get props => [];
+final class ChangeRouteEvent extends AppEvent {
+  final AppRouteState appRouteState;
+  ChangeRouteEvent({required this.appRouteState});
 }

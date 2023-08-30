@@ -21,6 +21,7 @@ final lightTheme = ThemeData(
     labelMedium: TextStyle(color: Colors.black),
     labelSmall: TextStyle(color: Colors.black),
   ),
+  primaryIconTheme: const IconThemeData(color: Colors.black),
 );
 
 final darkTheme = ThemeData(
@@ -44,4 +45,5 @@ final darkTheme = ThemeData(
     labelMedium: TextStyle(color: Colors.white),
     labelSmall: TextStyle(color: Colors.white),
   ),
+  primaryIconTheme: const IconThemeData(color: Colors.white),
 );
