@@ -45,14 +45,14 @@ List<JourneyModel> journeys = <JourneyModel>[
     lat: '20.359900',
     comments: users.sublist(3),
     placesInCollection: [
-      'assets/images/puc4.png',
-      'assets/images/puc5.png',
-      'assets/images/puc6.png'
+      'assets/images/puc4.jpg',
+      'assets/images/puc5.jpg',
+      'assets/images/puc6.jpg'
     ],
     pictures: [
-      'assets/images/puc1.png',
-      'assets/images/puc2.png',
-      'assets/images/puc3.png'
+      'assets/images/puc1.jpg',
+      'assets/images/puc2.jpg',
+      'assets/images/puc3.jpg'
     ],
   ),
   JourneyModel(
@@ -68,14 +68,14 @@ List<JourneyModel> journeys = <JourneyModel>[
     lat: '20.690709',
     comments: users.sublist(3),
     placesInCollection: [
-      'assets/images/valladolid4.png',
-      'assets/images/valladolid5.png',
-      'assets/images/valladolid6.png'
+      'assets/images/valladolid4.jpg',
+      'assets/images/valladolid5.jpg',
+      'assets/images/valladolid6.jpg'
     ],
     pictures: [
-      'assets/images/valladolid1.png',
-      'assets/images/valladolid2.png',
-      'assets/images/valladolid3.png'
+      'assets/images/valladolid1.jpg',
+      'assets/images/valladolid2.jpg',
+      'assets/images/valladolid3.jpg'
     ],
   ),
   JourneyModel(
@@ -91,14 +91,14 @@ List<JourneyModel> journeys = <JourneyModel>[
     lat: '21.142997',
     comments: users.sublist(3),
     placesInCollection: [
-      'assets/images/tizimin4.png',
-      'assets/images/tizimin5.png',
-      'assets/images/tizimin6.png'
+      'assets/images/tizimin4.jpg',
+      'assets/images/tizimin5.jpg',
+      'assets/images/tizimin6.jpg'
     ],
     pictures: [
-      'assets/images/tizimin1.png',
-      'assets/images/tizimin2.png',
-      'assets/images/tizimin3.png'
+      'assets/images/tizimin1.jpg',
+      'assets/images/tizimin2.jpg',
+      'assets/images/tizimin3.jpg'
     ],
   ),
 ];
