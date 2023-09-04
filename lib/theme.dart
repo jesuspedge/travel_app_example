@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 final lightTheme = ThemeData(
   primaryColor: Colors.white,
-  cardColor: const Color(0xFFF5F5F5),
+  cardColor: const Color(0xFFDEF5FF),
   shadowColor: Colors.black26,
   primaryTextTheme: const TextTheme(
     displayLarge: TextStyle(color: Colors.black),
