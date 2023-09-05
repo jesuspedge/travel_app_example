@@ -15,6 +15,7 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return Scaffold(
+      backgroundColor: Theme.of(context).cardColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -125,7 +126,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 ),
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   child: Row(
                     children: [
                       Icon(
@@ -147,20 +148,154 @@ class _DetailsPageState extends State<DetailsPage> {
                         widget.journey.numOfShares.toString(),
                         style: Theme.of(context).primaryTextTheme.titleLarge,
                       ),
+                      const Spacer(),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFBEEEFD),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.all(7),
+                        child: Row(
+                          children: [
+                            Icon(
+                              CupertinoIcons.checkmark_alt_circle,
+                              color: Colors.blue.shade400,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              'Check In',
+                              style: TextStyle(
+                                  color: Colors.blue.shade300,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
               ),
             ),
             Positioned(
-              bottom: 0,
+              bottom: -(size.height * 0.21),
               child: Container(
-                height: size.height * 0.43,
+                height: (size.height * 0.65),
                 width: size.width,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(40))),
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(40),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage:
+                              AssetImage(widget.journey.user.profilePicture),
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.journey.user.name,
+                              style: Theme.of(context)
+                                  .primaryTextTheme
+                                  .titleMedium,
+                            ),
+                            Text(
+                              '${widget.journey.createdAt.day}/${widget.journey.createdAt.month}/${widget.journey.createdAt.year} at ${widget.journey.createdAt.hour}:${widget.journey.createdAt.minute}.',
+                              style: TextStyle(
+                                  color: Colors.grey.withOpacity(0.7),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        Row(
+                          children: [
+                            const Icon(
+                              CupertinoIcons.add,
+                              color: Colors.grey,
+                              size: 13,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              'Follow',
+                              style: TextStyle(
+                                  color: Colors.grey.withOpacity(0.7),
+                                  fontSize: 15),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 10),
+                      child: Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.location_solid,
+                            color: Colors.grey.withOpacity(0.7),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            'YUCATÁN, México',
+                            style: TextStyle(
+                                color: Colors.blue.shade200,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.22,
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Text(
+                          widget.journey.description,
+                          style: Theme.of(context).primaryTextTheme.bodyLarge,
+                          textAlign: TextAlign.justify,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 10),
+                      child: Text(
+                        'PLACES IN THIS COLLECTION',
+                        style: Theme.of(context).primaryTextTheme.labelLarge,
+                      ),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.15,
+                      child: ListView.separated(
+                        itemCount: widget.journey.placesInCollection.length,
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 15),
+                        itemBuilder: ((context, index) {
+                          return Container(
+                            width: 100,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(widget
+                                        .journey.placesInCollection[index]),
+                                    fit: BoxFit.cover),
+                                borderRadius: BorderRadius.circular(15)),
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
