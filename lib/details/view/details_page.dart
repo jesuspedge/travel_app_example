@@ -17,14 +17,73 @@ class _DetailsPageState extends State<DetailsPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       body: SafeArea(
-        child: Stack(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: MyPersistentHeaderDelegate(
+                maxExtent: size.height,
+                minExtent: size.height * 0.60,
+                builder: (percent) {
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: PageView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: widget.journey.pictures.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage(
+                                        widget.journey.pictures[index]),
+                                    colorFilter: ColorFilter.mode(
+                                        Colors.black.withOpacity(0.3),
+                                        BlendMode.darken),
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                              widget.journey.pictures.length,
+                              (index) => Container(
+                                    color: Colors.grey,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 3),
+                                    height: 3,
+                                    width: 25,
+                                  )),
+                        ),
+                      )
+                    ],
+                  );
+                },
+              ),
+            ),
+            const SliverToBoxAdapter(child: Placeholder()),
+            const SliverToBoxAdapter(child: Placeholder()),
+            const SliverToBoxAdapter(child: Placeholder()),
+            const SliverToBoxAdapter(child: Placeholder()),
+          ],
+        ),
+        /*Stack(
           children: [
             Positioned(
               height: size.height * 0.65,
               width: size.width,
               child: BackgroundImagesWidget(widget: widget),
             ),
-            /*Positioned(
+            Positioned(
               width: size.width,
               top: 0,
               child: const AppBarWidget(),
@@ -52,12 +111,41 @@ class _DetailsPageState extends State<DetailsPage> {
               child: FloatingBottomWidget(
                 widget: widget,
               ),
-            )*/
+            )
           ],
-        ),
+        ),*/
       ),
     );
   }
+}
+
+class MyPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
+  MyPersistentHeaderDelegate(
+      {required double maxExtent,
+      required double minExtent,
+      required this.builder})
+      : _maxExtent = maxExtent,
+        _minExtent = minExtent;
+
+  final double _maxExtent;
+  final double _minExtent;
+  final Widget Function(double percent) builder;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return builder(shrinkOffset / _maxExtent);
+  }
+
+  @override
+  double get maxExtent => _maxExtent;
+
+  @override
+  double get minExtent => _minExtent;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      false;
 }
 
 class FloatingBottomWidget extends StatelessWidget {

@@ -165,18 +165,15 @@ class JourneyCard extends StatelessWidget {
         height: size.height * 0.4,
         child: Stack(
           children: [
-            Hero(
-              tag: journey.pictures[0],
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(journey.pictures[0]),
-                      fit: BoxFit.cover,
-                      colorFilter: ColorFilter.mode(
-                          Colors.black.withOpacity(0.6), BlendMode.softLight)),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(20),
-                  ),
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(journey.pictures[0]),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.6), BlendMode.softLight)),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(20),
                 ),
               ),
             ),
