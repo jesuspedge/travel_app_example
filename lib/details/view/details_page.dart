@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:data_repository/data_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,47 +25,76 @@ class _DetailsPageState extends State<DetailsPage> {
               pinned: true,
               delegate: MyPersistentHeaderDelegate(
                 maxExtent: size.height,
-                minExtent: size.height * 0.60,
+                minExtent: size.height * 0.6,
                 builder: (percent) {
-                  return Column(
+                  double topPercent = ((1 - percent) / 0.7).clamp(0.0, 1.0);
+                  double bottomPercent = (percent / 0.3).clamp(0.0, 1.0);
+
+                  return Stack(
+                    fit: StackFit.expand,
                     children: [
-                      Expanded(
-                        child: PageView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: widget.journey.pictures.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(
-                                        widget.journey.pictures[index]),
-                                    colorFilter: ColorFilter.mode(
-                                        Colors.black.withOpacity(0.3),
-                                        BlendMode.darken),
-                                  ),
+                      Positioned.fill(
+                        //With top and bottom we create spaces to interact
+                        top: (1 - bottomPercent) * 20,
+                        bottom: 160 * (1 - bottomPercent),
+                        child: Transform.scale(
+                          scale: lerpDouble(1, 1.3, bottomPercent),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: PageView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: widget.journey.pictures.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: AssetImage(
+                                                widget.journey.pictures[index]),
+                                            colorFilter: ColorFilter.mode(
+                                                Colors.black.withOpacity(0.3),
+                                                BlendMode.darken),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                      widget.journey.pictures.length,
+                                      (index) => Container(
+                                            color: Colors.grey,
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 3),
+                                            height: 3,
+                                            width: 25,
+                                          )),
                                 ),
-                              );
-                            }),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                              widget.journey.pictures.length,
-                              (index) => Container(
-                                    color: Colors.grey,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 3),
-                                    height: 3,
-                                    width: 25,
-                                  )),
+                              )
+                            ],
+                          ),
                         ),
-                      )
+                      ),
+                      Positioned.fill(
+                        top: null,
+                        child: SocialInfoWidget(
+                          widget: widget,
+                        ),
+                      ),
+                      Positioned.fill(
+                        top: null,
+                        child:
+                            JourneyDataInfoWidget(size: size, widget: widget),
+                      ),
                     ],
                   );
                 },
@@ -74,46 +104,13 @@ class _DetailsPageState extends State<DetailsPage> {
             const SliverToBoxAdapter(child: Placeholder()),
             const SliverToBoxAdapter(child: Placeholder()),
             const SliverToBoxAdapter(child: Placeholder()),
+            /*SliverToBoxAdapter(
+                child: SizedBox(
+              height: size.height * 0.6,
+              width: size.width,
+            )),*/
           ],
         ),
-        /*Stack(
-          children: [
-            Positioned(
-              height: size.height * 0.65,
-              width: size.width,
-              child: BackgroundImagesWidget(widget: widget),
-            ),
-            Positioned(
-              width: size.width,
-              top: 0,
-              child: const AppBarWidget(),
-            ),
-            Positioned(
-              top: 100,
-              left: 25,
-              child: JourneyNameWidget(widget: widget),
-            ),
-            Positioned(
-              height: size.height * 0.5,
-              width: size.width,
-              bottom: 0,
-              child: SocialInfoWidget(widget: widget),
-            ),
-            Positioned(
-              height: (size.height * 0.65),
-              width: size.width,
-              bottom: -(size.height * 0.21),
-              child: JourneyDataInfoWidget(size: size, widget: widget),
-            ),
-            Positioned(
-              width: size.width,
-              bottom: 10,
-              child: FloatingBottomWidget(
-                widget: widget,
-              ),
-            )
-          ],
-        ),*/
       ),
     );
   }
@@ -242,6 +239,7 @@ class JourneyDataInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 90,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
@@ -366,6 +364,7 @@ class SocialInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 150,
       alignment: Alignment.topCenter,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
