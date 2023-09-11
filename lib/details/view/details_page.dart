@@ -4,28 +4,46 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DetailsPage extends StatefulWidget {
-  const DetailsPage({Key? key, required this.journey}) : super(key: key);
+  const DetailsPage({Key? key, required this.journey, required this.size})
+      : super(key: key);
   final JourneyModel journey;
+  final Size size;
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  //Controller to init the position when screen inits
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    _scrollController =
+        ScrollController(initialScrollOffset: widget.size.height * 0.4);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.sizeOf(context);
     return Scaffold(
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
+          controller: _scrollController,
           slivers: [
             SliverPersistentHeader(
               pinned: true,
               delegate: MyPersistentHeaderDelegate(
-                maxExtent: size.height,
-                minExtent: size.height * 0.6,
+                maxExtent: widget.size.height,
+                minExtent: widget.size.height * 0.6,
                 builder: (percent) {
                   double topPercent = ((1 - percent) / 0.7).clamp(0.0, 1.0);
                   double bottomPercent = (percent / 0.3).clamp(0.0, 1.0);
@@ -37,63 +55,159 @@ class _DetailsPageState extends State<DetailsPage> {
                         //With top and bottom we create spaces to interact
                         top: (1 - bottomPercent) * 20,
                         bottom: 160 * (1 - bottomPercent),
-                        child: Transform.scale(
-                          scale: lerpDouble(1, 1.3, bottomPercent),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: PageView.builder(
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: widget.journey.pictures.length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: AssetImage(
-                                                widget.journey.pictures[index]),
-                                            colorFilter: ColorFilter.mode(
-                                                Colors.black.withOpacity(0.3),
-                                                BlendMode.darken),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(
-                                      widget.journey.pictures.length,
-                                      (index) => Container(
-                                            color: Colors.grey,
+                        child: Stack(
+                          children: [
+                            Transform.scale(
+                              scale: lerpDouble(1, 1.3, bottomPercent),
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: PageView.builder(
+                                        physics: const BouncingScrollPhysics(),
+                                        itemCount:
+                                            widget.journey.pictures.length,
+                                        itemBuilder: (context, index) {
+                                          return Container(
                                             margin: const EdgeInsets.symmetric(
-                                                horizontal: 3),
-                                            height: 3,
-                                            width: 25,
-                                          )),
+                                                horizontal: 20),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: AssetImage(widget
+                                                    .journey.pictures[index]),
+                                                colorFilter: ColorFilter.mode(
+                                                    Colors.black
+                                                        .withOpacity(0.3),
+                                                    BlendMode.darken),
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: List.generate(
+                                          widget.journey.pictures.length,
+                                          (index) => Container(
+                                                color: Colors.grey,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 3),
+                                                height: 3,
+                                                width: 25,
+                                              )),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              top: 15,
+                              left: lerpDouble(-25, 20, bottomPercent),
+                              child: GestureDetector(
+                                onTap: () => Navigator.of(context).pop(),
+                                child: const Icon(
+                                    Icons.arrow_back_ios_new_rounded,
+                                    color: Colors.white),
+                              ),
+                            ),
+                            Positioned(
+                              top: 15,
+                              right: lerpDouble(-25, 20, bottomPercent),
+                              child: const Icon(CupertinoIcons.ellipsis,
+                                  color: Colors.white),
+                            ),
+                            Positioned(
+                              left: lerpDouble(50, 30, topPercent),
+                              top: lerpDouble(widget.size.height * 0.02,
+                                  widget.size.height * 0.2, topPercent),
+                              child: Opacity(
+                                opacity: bottomPercent,
+                                child: Text(
+                                  widget.journey.name,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: lerpDouble(30, 50, topPercent)),
                                 ),
-                              )
-                            ],
+                              ),
+                            ),
+                            Positioned(
+                              left: lerpDouble(15, 30, topPercent),
+                              top: lerpDouble(widget.size.height * 0.2,
+                                  widget.size.height * 0.26, topPercent),
+                              child: Opacity(
+                                opacity: _scrollController.offset <=
+                                        widget.size.height * 0.4
+                                    ? bottomPercent
+                                    : lerpDouble(0.8, 1, topPercent)!,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  decoration: BoxDecoration(
+                                      gradient: widget.journey.kind ==
+                                              KindJourney.popularPlaces
+                                          ? LinearGradient(
+                                              begin: Alignment.centerLeft,
+                                              end: Alignment.centerRight,
+                                              colors: [
+                                                Colors.amber.shade300,
+                                                Colors.amber.shade700,
+                                              ],
+                                            )
+                                          : LinearGradient(
+                                              begin: Alignment.centerLeft,
+                                              end: Alignment.centerRight,
+                                              colors: [
+                                                Colors.green.shade300,
+                                                Colors.green.shade700,
+                                              ],
+                                            ),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: Text(
+                                    widget.journey.kind ==
+                                            KindJourney.popularPlaces
+                                        ? 'Popular Places'
+                                        : 'Events',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned.fill(
+                        top:
+                            _scrollController.offset <= widget.size.height * 0.4
+                                ? null
+                                : lerpDouble(widget.size.height * 0.6,
+                                    widget.size.height * 0.4, topPercent),
+                        child: TranslateAnimation(
+                          child: SocialInfoWidget(
+                            widget: widget,
                           ),
                         ),
                       ),
                       Positioned.fill(
-                        top: null,
-                        child: SocialInfoWidget(
-                          widget: widget,
-                        ),
-                      ),
-                      Positioned.fill(
-                        top: null,
-                        child:
-                            JourneyDataInfoWidget(size: size, widget: widget),
+                        top:
+                            _scrollController.offset <= widget.size.height * 0.4
+                                ? null
+                                : lerpDouble(widget.size.height * 0.25,
+                                    widget.size.height * 0.55, topPercent),
+                        child: TranslateAnimation(
+                            child: JourneyDataInfoWidget(
+                                size: widget.size, widget: widget)),
                       ),
                     ],
                   );
@@ -104,14 +218,31 @@ class _DetailsPageState extends State<DetailsPage> {
             const SliverToBoxAdapter(child: Placeholder()),
             const SliverToBoxAdapter(child: Placeholder()),
             const SliverToBoxAdapter(child: Placeholder()),
-            /*SliverToBoxAdapter(
-                child: SizedBox(
-              height: size.height * 0.6,
-              width: size.width,
-            )),*/
           ],
         ),
       ),
+    );
+  }
+}
+
+class TranslateAnimation extends StatelessWidget {
+  const TranslateAnimation({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 1, end: 0),
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOutBack,
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(0, 100 * value),
+          child: child,
+        );
+      },
+      child: child,
     );
   }
 }
@@ -290,7 +421,7 @@ class JourneyDataInfoWidget extends StatelessWidget {
               )
             ],
           ),
-          Padding(
+          /*Padding(
             padding: const EdgeInsets.only(top: 20, bottom: 10),
             child: Row(
               children: [
@@ -346,7 +477,7 @@ class JourneyDataInfoWidget extends StatelessWidget {
                 );
               }),
             ),
-          ),
+          ),*/
         ],
       ),
     );
@@ -474,59 +605,6 @@ class JourneyNameWidget extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class AppBarWidget extends StatelessWidget {
-  const AppBarWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: const Icon(
-              CupertinoIcons.back,
-              color: Colors.white,
-            ),
-          ),
-          const Icon(
-            CupertinoIcons.ellipsis,
-            color: Colors.white,
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class BackgroundImagesWidget extends StatelessWidget {
-  const BackgroundImagesWidget({
-    super.key,
-    required this.widget,
-  });
-
-  final DetailsPage widget;
-
-  @override
-  Widget build(BuildContext context) {
-    return Hero(
-      tag: widget.journey.pictures[0],
-      child: Image.asset(
-        widget.journey.pictures[0],
-        fit: BoxFit.fitHeight,
-        color: Colors.black.withOpacity(0.5),
-        colorBlendMode: BlendMode.softLight,
-      ),
     );
   }
 }

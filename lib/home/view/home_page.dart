@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
                               MaterialPageRoute(
                                 builder: (context) => DetailsPage(
                                   journey: journey,
+                                  size: size,
                                 ),
                               ),
                             );
