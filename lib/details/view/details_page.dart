@@ -40,13 +40,12 @@ class _DetailsPageState extends State<DetailsPage> {
           controller: _scrollController,
           slivers: [
             SliverPersistentHeader(
-              pinned: true,
               delegate: MyPersistentHeaderDelegate(
                 maxExtent: widget.size.height,
                 minExtent: widget.size.height * 0.6,
                 builder: (percent) {
-                  double topPercent = ((1 - percent) / 0.7).clamp(0.0, 1.0);
-                  double bottomPercent = (percent / 0.3).clamp(0.0, 1.0);
+                  double topPercent = ((1 - percent) / 0.6).clamp(0.0, 1.0);
+                  double bottomPercent = (percent / 0.4).clamp(0.0, 1.0);
 
                   return Stack(
                     fit: StackFit.expand,
@@ -58,7 +57,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         child: Stack(
                           children: [
                             Transform.scale(
-                              scale: lerpDouble(1, 1.3, bottomPercent),
+                              scaleX: lerpDouble(1, 1.2, bottomPercent),
                               child: Column(
                                 children: [
                                   Expanded(
@@ -190,34 +189,96 @@ class _DetailsPageState extends State<DetailsPage> {
                       Positioned.fill(
                         top:
                             _scrollController.offset <= widget.size.height * 0.4
-                                ? null
-                                : lerpDouble(widget.size.height * 0.6,
-                                    widget.size.height * 0.4, topPercent),
+                                ? lerpDouble(widget.size.height * 0.85,
+                                    widget.size.height * 0.47, bottomPercent)
+                                : lerpDouble(widget.size.height,
+                                    widget.size.height * 0.47, topPercent),
                         child: TranslateAnimation(
                           child: SocialInfoWidget(
                             widget: widget,
+                            visible: _scrollController.offset <=
+                                widget.size.height * 0.47,
                           ),
                         ),
                       ),
                       Positioned.fill(
-                        top:
-                            _scrollController.offset <= widget.size.height * 0.4
-                                ? null
-                                : lerpDouble(widget.size.height * 0.25,
-                                    widget.size.height * 0.55, topPercent),
+                        top: lerpDouble(widget.size.height * 0.91,
+                            widget.size.height * 0.53, bottomPercent),
                         child: TranslateAnimation(
-                            child: JourneyDataInfoWidget(
-                                size: widget.size, widget: widget)),
+                            child: JourneyUserWidget(widget: widget)),
                       ),
                     ],
                   );
                 },
               ),
             ),
-            const SliverToBoxAdapter(child: Placeholder()),
-            const SliverToBoxAdapter(child: Placeholder()),
-            const SliverToBoxAdapter(child: Placeholder()),
-            const SliverToBoxAdapter(child: Placeholder()),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.location_solid,
+                          color: Colors.grey.withOpacity(0.7),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          'YUCATÁN, México',
+                          style: TextStyle(
+                              color: Colors.blue.shade200,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 17),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: widget.size.height * 0.22,
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Text(
+                          widget.journey.description,
+                          style: Theme.of(context).primaryTextTheme.bodyLarge,
+                          textAlign: TextAlign.justify,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 10),
+                      child: Text(
+                        'PLACES IN THIS COLLECTION',
+                        style: Theme.of(context).primaryTextTheme.labelLarge,
+                      ),
+                    ),
+                    SizedBox(
+                      height: widget.size.height * 0.15,
+                      child: ListView.separated(
+                        itemCount: widget.journey.placesInCollection.length,
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 15),
+                        itemBuilder: ((context, index) {
+                          return Container(
+                            width: 100,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(widget
+                                        .journey.placesInCollection[index]),
+                                    fit: BoxFit.cover),
+                                borderRadius: BorderRadius.circular(15)),
+                          );
+                        }),
+                      ),
+                    ),
+                    const SizedBox(height: 60)
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -357,20 +418,17 @@ class FloatingBottomWidget extends StatelessWidget {
   }
 }
 
-class JourneyDataInfoWidget extends StatelessWidget {
-  const JourneyDataInfoWidget({
+class JourneyUserWidget extends StatelessWidget {
+  const JourneyUserWidget({
     super.key,
-    required this.size,
     required this.widget,
   });
 
-  final Size size;
   final DetailsPage widget;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 90,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
@@ -421,63 +479,6 @@ class JourneyDataInfoWidget extends StatelessWidget {
               )
             ],
           ),
-          /*Padding(
-            padding: const EdgeInsets.only(top: 20, bottom: 10),
-            child: Row(
-              children: [
-                Icon(
-                  CupertinoIcons.location_solid,
-                  color: Colors.grey.withOpacity(0.7),
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  'YUCATÁN, México',
-                  style: TextStyle(
-                      color: Colors.blue.shade200,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 17),
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: size.height * 0.22,
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Text(
-                widget.journey.description,
-                style: Theme.of(context).primaryTextTheme.bodyLarge,
-                textAlign: TextAlign.justify,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20, bottom: 10),
-            child: Text(
-              'PLACES IN THIS COLLECTION',
-              style: Theme.of(context).primaryTextTheme.labelLarge,
-            ),
-          ),
-          SizedBox(
-            height: size.height * 0.15,
-            child: ListView.separated(
-              itemCount: widget.journey.placesInCollection.length,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              separatorBuilder: (context, index) => const SizedBox(width: 15),
-              itemBuilder: ((context, index) {
-                return Container(
-                  width: 100,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                              widget.journey.placesInCollection[index]),
-                          fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(15)),
-                );
-              }),
-            ),
-          ),*/
         ],
       ),
     );
@@ -488,23 +489,25 @@ class SocialInfoWidget extends StatelessWidget {
   const SocialInfoWidget({
     super.key,
     required this.widget,
+    required this.visible,
   });
 
   final DetailsPage widget;
+  final bool visible;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
       alignment: Alignment.topCenter,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(40),
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      child: Visibility(
+        visible: visible,
         child: Row(
           children: [
             Icon(
@@ -552,59 +555,6 @@ class SocialInfoWidget extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class JourneyNameWidget extends StatelessWidget {
-  const JourneyNameWidget({
-    super.key,
-    required this.widget,
-  });
-
-  final DetailsPage widget;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.journey.name,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 40),
-        ),
-        const SizedBox(height: 15),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          decoration: BoxDecoration(
-              gradient: widget.journey.kind == KindJourney.popularPlaces
-                  ? LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Colors.amber.shade300,
-                        Colors.amber.shade700,
-                      ],
-                    )
-                  : LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Colors.green.shade300,
-                        Colors.green.shade700,
-                      ],
-                    ),
-              borderRadius: const BorderRadius.all(Radius.circular(10))),
-          child: Text(
-            widget.journey.kind == KindJourney.popularPlaces
-                ? 'Popular Places'
-                : 'Events',
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
-          ),
-        ),
-      ],
     );
   }
 }

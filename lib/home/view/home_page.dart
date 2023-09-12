@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
         JourneyModel lastJourney = context.read<AppBloc>().journeysList.last;
 
         return Scaffold(
-          backgroundColor: Theme.of(context).cardColor,
+          backgroundColor: Theme.of(context).primaryColor,
           body: SafeArea(
             child: Stack(
               children: [
@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                     height: kBottomNavigationBarHeight - 10,
                     child: CustomPaint(
                       painter: CustomBottomNavigationBar(
-                          color: Theme.of(context).primaryColor),
+                          color: Theme.of(context).cardColor),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
