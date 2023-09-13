@@ -107,7 +107,8 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                             ),
                             Positioned(
-                              top: 15,
+                              top: lerpDouble(
+                                  widget.size.height * 0.65, 15, topPercent),
                               left: lerpDouble(-25, 20, bottomPercent),
                               child: GestureDetector(
                                 onTap: () => Navigator.of(context).pop(),
@@ -117,15 +118,16 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                             ),
                             Positioned(
-                              top: 15,
+                              top: lerpDouble(
+                                  widget.size.height * 0.65, 15, topPercent),
                               right: lerpDouble(-25, 20, bottomPercent),
                               child: const Icon(CupertinoIcons.ellipsis,
                                   color: Colors.white),
                             ),
                             Positioned(
-                              left: lerpDouble(50, 30, topPercent),
+                              left: lerpDouble(150, 30, topPercent),
                               top: lerpDouble(widget.size.height * 0.02,
-                                  widget.size.height * 0.2, topPercent),
+                                  widget.size.height * 0.25, topPercent),
                               child: Opacity(
                                 opacity: bottomPercent,
                                 child: Text(
@@ -138,9 +140,9 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                             ),
                             Positioned(
-                              left: lerpDouble(15, 30, topPercent),
-                              top: lerpDouble(widget.size.height * 0.2,
-                                  widget.size.height * 0.26, topPercent),
+                              left: lerpDouble(5, 30, topPercent),
+                              top: lerpDouble(widget.size.height * 0.8,
+                                  widget.size.height * 0.32, topPercent),
                               child: Opacity(
                                 opacity: _scrollController.offset <=
                                         widget.size.height * 0.4
@@ -203,7 +205,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                       Positioned.fill(
                         top: lerpDouble(widget.size.height * 0.91,
-                            widget.size.height * 0.53, bottomPercent),
+                            widget.size.height * 0.52, bottomPercent),
                         child: TranslateAnimation(
                             child: JourneyUserWidget(widget: widget)),
                       ),
@@ -215,67 +217,69 @@ class _DetailsPageState extends State<DetailsPage> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          CupertinoIcons.location_solid,
-                          color: Colors.grey.withOpacity(0.7),
+                child: TranslateAnimation(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.location_solid,
+                            color: Colors.grey.withOpacity(0.7),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            'YUCATÁN, México',
+                            style: TextStyle(
+                                color: Colors.blue.shade200,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: widget.size.height * 0.22,
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Text(
+                            widget.journey.description,
+                            style: Theme.of(context).primaryTextTheme.bodyLarge,
+                            textAlign: TextAlign.justify,
+                          ),
                         ),
-                        const SizedBox(width: 5),
-                        Text(
-                          'YUCATÁN, México',
-                          style: TextStyle(
-                              color: Colors.blue.shade200,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 17),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      height: widget.size.height * 0.22,
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 10),
                         child: Text(
-                          widget.journey.description,
-                          style: Theme.of(context).primaryTextTheme.bodyLarge,
-                          textAlign: TextAlign.justify,
+                          'PLACES IN THIS COLLECTION',
+                          style: Theme.of(context).primaryTextTheme.labelLarge,
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20, bottom: 10),
-                      child: Text(
-                        'PLACES IN THIS COLLECTION',
-                        style: Theme.of(context).primaryTextTheme.labelLarge,
+                      SizedBox(
+                        height: widget.size.height * 0.15,
+                        child: ListView.separated(
+                          itemCount: widget.journey.placesInCollection.length,
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 15),
+                          itemBuilder: ((context, index) {
+                            return Container(
+                              width: 100,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(widget
+                                          .journey.placesInCollection[index]),
+                                      fit: BoxFit.cover),
+                                  borderRadius: BorderRadius.circular(15)),
+                            );
+                          }),
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: widget.size.height * 0.15,
-                      child: ListView.separated(
-                        itemCount: widget.journey.placesInCollection.length,
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 15),
-                        itemBuilder: ((context, index) {
-                          return Container(
-                            width: 100,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(widget
-                                        .journey.placesInCollection[index]),
-                                    fit: BoxFit.cover),
-                                borderRadius: BorderRadius.circular(15)),
-                          );
-                        }),
-                      ),
-                    ),
-                    const SizedBox(height: 60)
-                  ],
+                      const SizedBox(height: 60)
+                    ],
+                  ),
                 ),
               ),
             ),
