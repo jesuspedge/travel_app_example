@@ -58,53 +58,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           children: [
                             Transform.scale(
                               scaleX: lerpDouble(1, 1.2, bottomPercent),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: PageView.builder(
-                                        physics: const BouncingScrollPhysics(),
-                                        itemCount:
-                                            widget.journey.pictures.length,
-                                        itemBuilder: (context, index) {
-                                          return Container(
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 20),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: AssetImage(widget
-                                                    .journey.pictures[index]),
-                                                colorFilter: ColorFilter.mode(
-                                                    Colors.black
-                                                        .withOpacity(0.3),
-                                                    BlendMode.darken),
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: List.generate(
-                                          widget.journey.pictures.length,
-                                          (index) => Container(
-                                                color: Colors.grey,
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 3),
-                                                height: 3,
-                                                width: 25,
-                                              )),
-                                    ),
-                                  )
-                                ],
-                              ),
+                              child: JourneyPicturesWidget(widget: widget),
                             ),
                             Positioned(
                               top: lerpDouble(
@@ -148,41 +102,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                         widget.size.height * 0.4
                                     ? bottomPercent
                                     : lerpDouble(0.8, 1, topPercent)!,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  decoration: BoxDecoration(
-                                      gradient: widget.journey.kind ==
-                                              KindJourney.popularPlaces
-                                          ? LinearGradient(
-                                              begin: Alignment.centerLeft,
-                                              end: Alignment.centerRight,
-                                              colors: [
-                                                Colors.amber.shade300,
-                                                Colors.amber.shade700,
-                                              ],
-                                            )
-                                          : LinearGradient(
-                                              begin: Alignment.centerLeft,
-                                              end: Alignment.centerRight,
-                                              colors: [
-                                                Colors.green.shade300,
-                                                Colors.green.shade700,
-                                              ],
-                                            ),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: Text(
-                                    widget.journey.kind ==
-                                            KindJourney.popularPlaces
-                                        ? 'Popular Places'
-                                        : 'Events',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15),
-                                  ),
-                                ),
+                                child: KindJourneyWidget(widget: widget),
                               ),
                             ),
                           ],
@@ -218,68 +138,7 @@ class _DetailsPageState extends State<DetailsPage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TranslateAnimation(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            CupertinoIcons.location_solid,
-                            color: Colors.grey.withOpacity(0.7),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            'YUCATÁN, México',
-                            style: TextStyle(
-                                color: Colors.blue.shade200,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 17),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: widget.size.height * 0.22,
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: Text(
-                            widget.journey.description,
-                            style: Theme.of(context).primaryTextTheme.bodyLarge,
-                            textAlign: TextAlign.justify,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 10),
-                        child: Text(
-                          'PLACES IN THIS COLLECTION',
-                          style: Theme.of(context).primaryTextTheme.labelLarge,
-                        ),
-                      ),
-                      SizedBox(
-                        height: widget.size.height * 0.15,
-                        child: ListView.separated(
-                          itemCount: widget.journey.placesInCollection.length,
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(width: 15),
-                          itemBuilder: ((context, index) {
-                            return Container(
-                              width: 100,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(widget
-                                          .journey.placesInCollection[index]),
-                                      fit: BoxFit.cover),
-                                  borderRadius: BorderRadius.circular(15)),
-                            );
-                          }),
-                        ),
-                      ),
-                      const SizedBox(height: 60)
-                    ],
-                  ),
+                  child: DetailsJourneyWidget(widget: widget),
                 ),
               ),
             ),
@@ -290,59 +149,8 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 }
 
-class TranslateAnimation extends StatelessWidget {
-  const TranslateAnimation({Key? key, required this.child}) : super(key: key);
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 1, end: 0),
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOutBack,
-      builder: (context, value, child) {
-        return Transform.translate(
-          offset: Offset(0, 100 * value),
-          child: child,
-        );
-      },
-      child: child,
-    );
-  }
-}
-
-class MyPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
-  MyPersistentHeaderDelegate(
-      {required double maxExtent,
-      required double minExtent,
-      required this.builder})
-      : _maxExtent = maxExtent,
-        _minExtent = minExtent;
-
-  final double _maxExtent;
-  final double _minExtent;
-  final Widget Function(double percent) builder;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return builder(shrinkOffset / _maxExtent);
-  }
-
-  @override
-  double get maxExtent => _maxExtent;
-
-  @override
-  double get minExtent => _minExtent;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      false;
-}
-
-class FloatingBottomWidget extends StatelessWidget {
-  const FloatingBottomWidget({
+class JourneyPicturesWidget extends StatelessWidget {
+  const JourneyPicturesWidget({
     super.key,
     required this.widget,
   });
@@ -351,72 +159,83 @@ class FloatingBottomWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var comments = widget.journey.comments.sublist(0, 3);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Container(
-            height: 55,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                color: const Color(0xFF2F289E),
-                borderRadius: BorderRadius.circular(15)),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 50,
-                  child: Stack(
-                    children: List.generate(comments.length, (index) {
-                      return Positioned(
-                        left: index * 10,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 15,
-                          child: CircleAvatar(
-                            radius: 13,
-                            backgroundImage: AssetImage(
-                                widget.journey.comments[index].profilePicture),
-                          ),
-                        ),
-                      );
-                    }),
+    return Column(
+      children: [
+        Expanded(
+          child: PageView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: widget.journey.pictures.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(widget.journey.pictures[index]),
+                      colorFilter: ColorFilter.mode(
+                          Colors.black.withOpacity(0.3), BlendMode.darken),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 5),
-                const Text(
-                  'Comments',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  widget.journey.comments.length.toString(),
-                  style: const TextStyle(color: Colors.white, fontSize: 15),
-                ),
-                const SizedBox(width: 10),
-                const Icon(
-                  Icons.arrow_forward,
-                  color: Color.fromARGB(255, 16, 14, 54),
-                ),
-              ],
-            ),
+                );
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+                widget.journey.pictures.length,
+                (index) => Container(
+                      color: Colors.grey,
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      height: 3,
+                      width: 25,
+                    )),
           ),
-          const Spacer(),
-          Container(
-            height: 55,
-            width: 55,
-            decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(10)),
-            child: Icon(
-              CupertinoIcons.location_solid,
-              color: Colors.blue.shade400,
-            ),
-          )
-        ],
+        )
+      ],
+    );
+  }
+}
+
+class KindJourneyWidget extends StatelessWidget {
+  const KindJourneyWidget({
+    super.key,
+    required this.widget,
+  });
+
+  final DetailsPage widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+          gradient: widget.journey.kind == KindJourney.popularPlaces
+              ? LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Colors.amber.shade300,
+                    Colors.amber.shade700,
+                  ],
+                )
+              : LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Colors.green.shade300,
+                    Colors.green.shade700,
+                  ],
+                ),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
+      child: Text(
+        widget.journey.kind == KindJourney.popularPlaces
+            ? 'Popular Places'
+            : 'Events',
+        style: const TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
       ),
     );
   }
@@ -561,4 +380,210 @@ class SocialInfoWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class DetailsJourneyWidget extends StatelessWidget {
+  const DetailsJourneyWidget({
+    super.key,
+    required this.widget,
+  });
+
+  final DetailsPage widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              CupertinoIcons.location_solid,
+              color: Colors.grey.withOpacity(0.7),
+            ),
+            const SizedBox(width: 5),
+            Text(
+              'YUCATÁN, México',
+              style: TextStyle(
+                  color: Colors.blue.shade200,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 17),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: widget.size.height * 0.22,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Text(
+              widget.journey.description,
+              style: Theme.of(context).primaryTextTheme.bodyLarge,
+              textAlign: TextAlign.justify,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 10),
+          child: Text(
+            'PLACES IN THIS COLLECTION',
+            style: Theme.of(context).primaryTextTheme.labelLarge,
+          ),
+        ),
+        SizedBox(
+          height: widget.size.height * 0.15,
+          child: ListView.separated(
+            itemCount: widget.journey.placesInCollection.length,
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            separatorBuilder: (context, index) => const SizedBox(width: 15),
+            itemBuilder: ((context, index) {
+              return Container(
+                width: 100,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(
+                            widget.journey.placesInCollection[index]),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(15)),
+              );
+            }),
+          ),
+        ),
+        const SizedBox(height: 60)
+      ],
+    );
+  }
+}
+
+class FloatingBottomWidget extends StatelessWidget {
+  const FloatingBottomWidget({
+    super.key,
+    required this.widget,
+  });
+
+  final DetailsPage widget;
+
+  @override
+  Widget build(BuildContext context) {
+    var comments = widget.journey.comments.sublist(0, 3);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Container(
+            height: 55,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                color: const Color(0xFF2F289E),
+                borderRadius: BorderRadius.circular(15)),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 50,
+                  child: Stack(
+                    children: List.generate(comments.length, (index) {
+                      return Positioned(
+                        left: index * 10,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 15,
+                          child: CircleAvatar(
+                            radius: 13,
+                            backgroundImage: AssetImage(
+                                widget.journey.comments[index].profilePicture),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                const SizedBox(width: 5),
+                const Text(
+                  'Comments',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  widget.journey.comments.length.toString(),
+                  style: const TextStyle(color: Colors.white, fontSize: 15),
+                ),
+                const SizedBox(width: 10),
+                const Icon(
+                  Icons.arrow_forward,
+                  color: Color.fromARGB(255, 16, 14, 54),
+                ),
+              ],
+            ),
+          ),
+          const Spacer(),
+          Container(
+            height: 55,
+            width: 55,
+            decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(10)),
+            child: Icon(
+              CupertinoIcons.location_solid,
+              color: Colors.blue.shade400,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class TranslateAnimation extends StatelessWidget {
+  const TranslateAnimation({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 1, end: 0),
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOutBack,
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(0, 100 * value),
+          child: child,
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+class MyPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
+  MyPersistentHeaderDelegate(
+      {required double maxExtent,
+      required double minExtent,
+      required this.builder})
+      : _maxExtent = maxExtent,
+        _minExtent = minExtent;
+
+  final double _maxExtent;
+  final double _minExtent;
+  final Widget Function(double percent) builder;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return builder(shrinkOffset / _maxExtent);
+  }
+
+  @override
+  double get maxExtent => _maxExtent;
+
+  @override
+  double get minExtent => _minExtent;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      false;
 }
