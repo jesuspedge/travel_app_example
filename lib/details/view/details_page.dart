@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:data_repository/data_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_app/app/app.dart';
 
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key, required this.journey, required this.size})
@@ -23,28 +25,11 @@ class _DetailsPageState extends State<DetailsPage> {
     _bottomPercenNotifier.value = lerpDouble(0.0, 1.0, (percent / 0.5))!;
   }
 
-  /*void _isScrollingListener() {
-    double percent =
-        (_scrollController.position.pixels / widget.size.height) * -1;
-
-    if (_scrollController.position.isScrollingNotifier.value) {
-      if (percent < 0.3 && percent > 0.15) {
-        _scrollController.animateTo(widget.size.height * 0.4,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.decelerate);
-      }
-    }
-  }*/
-
   @override
   void initState() {
     _scrollController =
         ScrollController(initialScrollOffset: widget.size.height * 0.4);
     _scrollController.addListener(_scrollListener);
-    /* WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollController.position.isScrollingNotifier
-          .addListener(_isScrollingListener);
-    });*/
     _bottomPercenNotifier = ValueNotifier(1.0);
     super.initState();
   }
@@ -92,11 +77,21 @@ class _DetailsPageState extends State<DetailsPage> {
                                   top: lerpDouble(widget.size.height * 0.65, 15,
                                       topPercent),
                                   left: lerpDouble(-25, 20, bottomPercent),
-                                  child: GestureDetector(
-                                    onTap: () => Navigator.of(context).pop(),
-                                    child: const Icon(
-                                        Icons.arrow_back_ios_new_rounded,
-                                        color: Colors.white),
+                                  child: BlocBuilder<AppBloc, AppState>(
+                                    builder: (context, state) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          context.read<AppBloc>().add(
+                                              ChangeRouteEvent(
+                                                  appRouteState:
+                                                      AppRouteState.home));
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Icon(
+                                            Icons.arrow_back_ios_new_rounded,
+                                            color: Colors.white),
+                                      );
+                                    },
                                   ),
                                 ),
                                 Positioned(
@@ -265,15 +260,16 @@ class _JourneyPicturesWidgetState extends State<JourneyPicturesWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
-                widget.widget.journey.pictures.length,
-                (index) => Container(
-                      color: imageIndex == index
-                          ? Theme.of(context).primaryIconTheme.color
-                          : Colors.grey,
-                      margin: const EdgeInsets.symmetric(horizontal: 3),
-                      height: 3,
-                      width: 25,
-                    )),
+              widget.widget.journey.pictures.length,
+              (index) => Container(
+                color: imageIndex == index
+                    ? Theme.of(context).primaryIconTheme.color
+                    : Colors.grey,
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                height: 3,
+                width: imageIndex == index ? 25 : 10,
+              ),
+            ),
           ),
         )
       ],

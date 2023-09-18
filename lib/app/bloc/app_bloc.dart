@@ -1,11 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
 
-class AppBloc extends Bloc<AppEvent, AppState> {
+class AppBloc extends HydratedBloc<AppEvent, AppState> {
   AppThemeState themeState;
   AppRouteState routeState;
   List<JourneyModel> journeysList = List.unmodifiable(journeys);
@@ -23,4 +24,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   void _onRouteChange(ChangeRouteEvent event, Emitter<AppState> emit) {
     emit(state.copyWith(appRouteState: event.appRouteState));
   }
+
+  @override
+  AppState fromJson(Map<String, dynamic> json) => AppState(
+        themeState: AppThemeState.values.elementAt(json['themeState']),
+        appRouteState: AppRouteState.values.elementAt(json['appRoute']),
+      );
+
+  @override
+  Map<String, int> toJson(AppState state) => {
+        'themeState': state.themeState.index,
+        'appRoute': state.appRouteState.index,
+      };
 }

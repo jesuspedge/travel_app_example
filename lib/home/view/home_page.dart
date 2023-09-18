@@ -38,6 +38,8 @@ class _HomePageState extends State<HomePage> {
                             context.read<AppBloc>().journeysList[index];
                         return GestureDetector(
                           onTap: () {
+                            context.read<AppBloc>().add(ChangeRouteEvent(
+                                appRouteState: AppRouteState.details));
                             Navigator.push(
                               context,
                               MaterialPageRoute(
