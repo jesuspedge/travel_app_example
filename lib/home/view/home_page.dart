@@ -19,6 +19,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  static Route<void> _detailsPageRoute(
+      BuildContext context, Object? arguments) {
+    return DetailsPage.route(MediaQuery.of(context).size);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
@@ -47,8 +52,10 @@ class _HomePageState extends State<HomePage> {
                             context.read<AppBloc>().add(ChangeRouteEvent(
                                 appRouteState: AppRouteState.details,
                                 journeySelected: index));
-                            Navigator.pushReplacement(
-                                context, DetailsPage.route(journey, size));
+
+                            Navigator.restorablePush(
+                                context, _detailsPageRoute);
+                            /*Navigator.push(context, DetailsPage.route(size));*/
                           },
                           child: JourneyCard(
                               size: size,
