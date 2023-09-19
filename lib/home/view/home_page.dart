@@ -8,6 +8,12 @@ import 'package:travel_app/details/details.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  static Route<void> route() {
+    return PageRouteBuilder<void>(
+        pageBuilder: (_, animation, __) =>
+            FadeTransition(opacity: animation, child: const HomePage()));
+  }
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -39,16 +45,10 @@ class _HomePageState extends State<HomePage> {
                         return GestureDetector(
                           onTap: () {
                             context.read<AppBloc>().add(ChangeRouteEvent(
-                                appRouteState: AppRouteState.details));
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DetailsPage(
-                                  journey: journey,
-                                  size: size,
-                                ),
-                              ),
-                            );
+                                appRouteState: AppRouteState.details,
+                                journeySelected: index));
+                            Navigator.pushReplacement(
+                                context, DetailsPage.route(journey, size));
                           },
                           child: JourneyCard(
                               size: size,

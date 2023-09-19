@@ -4,12 +4,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/app/app.dart';
+import 'package:travel_app/home/home.dart';
 
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key, required this.journey, required this.size})
       : super(key: key);
   final JourneyModel journey;
   final Size size;
+
+  static Route<void> route(JourneyModel journey, Size size) {
+    return PageRouteBuilder<void>(
+      pageBuilder: (_, animation, __) => FadeTransition(
+        opacity: animation,
+        child: DetailsPage(journey: journey, size: size),
+      ),
+    );
+  }
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -84,8 +94,10 @@ class _DetailsPageState extends State<DetailsPage> {
                                           context.read<AppBloc>().add(
                                               ChangeRouteEvent(
                                                   appRouteState:
-                                                      AppRouteState.home));
-                                          Navigator.of(context).pop();
+                                                      AppRouteState.home,
+                                                  journeySelected: 0));
+                                          Navigator.pushReplacement(
+                                              context, HomePage.route());
                                         },
                                         child: const Icon(
                                             Icons.arrow_back_ios_new_rounded,

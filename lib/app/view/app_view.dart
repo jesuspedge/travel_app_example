@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/app/app.dart';
+import 'package:travel_app/details/details.dart';
 import 'package:travel_app/home/home.dart';
 import 'package:travel_app/theme.dart';
 
@@ -30,7 +31,14 @@ class _TravelAppViewState extends State<TravelAppView> {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: state.themeState == AppThemeState.light ? lightTheme : darkTheme,
-        home: const HomePage(),
+        home: state.appRouteState == AppRouteState.home
+            ? const HomePage()
+            : DetailsPage(
+                journey: context
+                    .read<AppBloc>()
+                    .journeysList
+                    .elementAt(state.journeyListIndexSelected),
+                size: MediaQuery.of(context).size),
       );
     });
   }

@@ -11,5 +11,7 @@ final class ChangeThemeEvent extends AppEvent {
 
 final class ChangeRouteEvent extends AppEvent {
   final AppRouteState appRouteState;
-  ChangeRouteEvent({required this.appRouteState});
+  final int journeySelected;
+  ChangeRouteEvent(
+      {required this.appRouteState, required this.journeySelected});
 }

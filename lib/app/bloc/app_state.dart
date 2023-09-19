@@ -8,20 +8,27 @@ enum AppRouteState { home, details }
 final class AppState extends Equatable {
   AppThemeState themeState;
   AppRouteState appRouteState;
+  int journeyListIndexSelected;
 
   AppState(
       {this.themeState = AppThemeState.light,
-      this.appRouteState = AppRouteState.home});
+      this.appRouteState = AppRouteState.home,
+      this.journeyListIndexSelected = 0});
 
   AppState copyWith({
     AppThemeState? themeState,
     AppRouteState? appRouteState,
+    int? journeyListIndexSelected,
   }) {
     return AppState(
-        themeState: themeState ?? this.themeState,
-        appRouteState: appRouteState ?? this.appRouteState);
+      themeState: themeState ?? this.themeState,
+      appRouteState: appRouteState ?? this.appRouteState,
+      journeyListIndexSelected:
+          journeyListIndexSelected ?? this.journeyListIndexSelected,
+    );
   }
 
   @override
-  List<Object> get props => [themeState, appRouteState];
+  List<Object> get props =>
+      [themeState, appRouteState, journeyListIndexSelected];
 }
