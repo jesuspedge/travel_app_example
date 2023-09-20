@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/app/app.dart';
+import 'package:travel_app/home/home.dart';
 
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key, required this.size}) : super(key: key);
@@ -104,9 +105,12 @@ class _DetailsPageState extends State<DetailsPage> {
                                                       appRouteState:
                                                           AppRouteState.home,
                                                       journeySelected: 0));
-                                              Navigator.of(context).pop();
-                                              /*Navigator.pushReplacement(
-                                                  context, HomePage.route());*/
+                                              if (Navigator.canPop(context)) {
+                                                Navigator.of(context).pop();
+                                              } else {
+                                                Navigator.pushReplacement(
+                                                    context, HomePage.route());
+                                              }
                                             },
                                             child: const Icon(
                                                 Icons
