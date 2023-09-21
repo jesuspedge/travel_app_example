@@ -22,6 +22,12 @@ final lightTheme = ThemeData(
     labelSmall: TextStyle(color: Colors.black),
   ),
   primaryIconTheme: const IconThemeData(color: Colors.black),
+  pageTransitionsTheme: const PageTransitionsTheme(
+    builders: {
+      TargetPlatform.android: CustomTransitionBuilder(),
+      TargetPlatform.iOS: CustomTransitionBuilder(),
+    },
+  ),
 );
 
 final darkTheme = ThemeData(
@@ -46,4 +52,27 @@ final darkTheme = ThemeData(
     labelSmall: TextStyle(color: Colors.white),
   ),
   primaryIconTheme: const IconThemeData(color: Colors.white),
+  pageTransitionsTheme: const PageTransitionsTheme(
+    builders: {
+      TargetPlatform.android: CustomTransitionBuilder(),
+      TargetPlatform.iOS: CustomTransitionBuilder(),
+    },
+  ),
 );
+
+class CustomTransitionBuilder extends PageTransitionsBuilder {
+  const CustomTransitionBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+      PageRoute<T> route,
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child) {
+    return FadeTransition(
+      opacity: animation,
+      child: child,
+    );
+  }
+}

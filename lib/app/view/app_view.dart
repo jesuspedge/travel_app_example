@@ -27,17 +27,28 @@ class TravelAppView extends StatefulWidget {
 class _TravelAppViewState extends State<TravelAppView> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppBloc, AppState>(builder: (context, state) {
-      return MaterialApp(
-        restorationScopeId: "root",
-        debugShowCheckedModeBanner: false,
-        theme: state.themeState == AppThemeState.light ? lightTheme : darkTheme,
-        home: state.appRouteState == AppRouteState.home
-            ? const HomePage()
-            : DetailsPage(
-                size: MediaQuery.sizeOf(context),
-              ),
-      );
-    });
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, state) {
+        return MaterialApp(
+          restorationScopeId: "root",
+          debugShowCheckedModeBanner: false,
+          theme:
+              state.themeState == AppThemeState.light ? lightTheme : darkTheme,
+          home: Navigator(
+            pages: [
+              const MaterialPage(child: HomePage()),
+              if (state.appRouteState == AppRouteState.details)
+                MaterialPage(
+                    child: DetailsPage(size: MediaQuery.sizeOf(context)))
+            ],
+            onPopPage: (route, result) {
+              if (route.didPop(result)) return true;
+
+              return false;
+            },
+          ),
+        );
+      },
+    );
   }
 }

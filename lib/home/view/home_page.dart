@@ -3,16 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/app/app.dart';
-import 'package:travel_app/details/details.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
-
-  static Route<void> route() {
-    return PageRouteBuilder<void>(
-        pageBuilder: (_, animation, __) =>
-            FadeTransition(opacity: animation, child: const HomePage()));
-  }
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -47,7 +40,6 @@ class _HomePageState extends State<HomePage> {
                             context.read<AppBloc>().add(ChangeRouteEvent(
                                 appRouteState: AppRouteState.details,
                                 journeySelected: index));
-                            Navigator.push(context, DetailsPage.route(size));
                           },
                           child: JourneyCard(
                               size: size,
