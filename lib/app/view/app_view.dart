@@ -36,10 +36,13 @@ class _TravelAppViewState extends State<TravelAppView> {
               state.themeState == AppThemeState.light ? lightTheme : darkTheme,
           home: Navigator(
             pages: [
-              const MaterialPage(child: HomePage()),
+              MaterialPage(
+                child: HomePage(size: MediaQuery.sizeOf(context)),
+              ),
               if (state.appRouteState == AppRouteState.details)
                 MaterialPage(
-                    child: DetailsPage(size: MediaQuery.sizeOf(context)))
+                  child: DetailsPage(size: MediaQuery.sizeOf(context)),
+                )
             ],
             onPopPage: (route, result) {
               if (route.didPop(result)) return true;
